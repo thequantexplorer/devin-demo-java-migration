@@ -8,7 +8,7 @@ public final class Money {
     private final String currency;
 
     public Money(BigDecimal amount, String currency) {
-        this.amount = amount.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        this.amount = amount.setScale(2, RoundingMode.HALF_EVEN);
         this.currency = currency;
     }
 
@@ -26,7 +26,7 @@ public final class Money {
     }
 
     public Money percent(BigDecimal pct) {
-        return new Money(amount.multiply(pct).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_EVEN), currency);
+        return new Money(amount.multiply(pct).divide(new BigDecimal(100), 2, RoundingMode.HALF_EVEN), currency);
     }
 
     public BigDecimal getAmount() { return amount; }

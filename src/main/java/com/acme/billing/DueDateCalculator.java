@@ -1,21 +1,18 @@
 package com.acme.billing;
 
-import java.util.Calendar;
+import java.time.DayOfWeek;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.TimeZone;
 
 /** Net-N payment terms. Weekends roll forward to Monday. */
 public class DueDateCalculator {
-    private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
-
     public Date dueDate(Date issuedAt, int netDays) {
-        Calendar cal = Calendar.getInstance(UTC);
-        cal.setTime(issuedAt);
-        cal.add(Calendar.DAY_OF_MONTH, netDays);
-        int dow = cal.get(Calendar.DAY_OF_WEEK);
-        if (dow == Calendar.SATURDAY) cal.add(Calendar.DAY_OF_MONTH, 2);
-        if (dow == Calendar.SUNDAY) cal.add(Calendar.DAY_OF_MONTH, 1);
-        return cal.getTime();
+        ZonedDateTime due = issuedAt.toInstant().atZone(ZoneOffset.UTC).plusDays(netDays);
+        DayOfWeek dow = due.getDayOfWeek();
+        if (dow == DayOfWeek.SATURDAY) due = due.plusDays(2);
+        if (dow == DayOfWeek.SUNDAY) due = due.plusDays(1);
+        return Date.from(due.toInstant());
     }
 
     public boolean isOverdue(Date dueAt, Date now) {

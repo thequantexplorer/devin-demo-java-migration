@@ -1,22 +1,26 @@
 package com.acme.billing;
 
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class InvoiceFormatter {
-    // Shared across threads by the batch exporter.
-    private static final SimpleDateFormat ISO = new SimpleDateFormat("yyyy-MM-dd");
-    static { ISO.setTimeZone(TimeZone.getTimeZone("UTC")); }
+    // Immutable and thread-safe, so it can be shared by the batch exporter.
+    private static final DateTimeFormatter ISO = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneOffset.UTC);
 
     public String toCsvRow(Invoice invoice, Money tax) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(invoice.getId()).append(',');
         sb.append(invoice.getCustomerId()).append(',');
-        sb.append(ISO.format(invoice.getIssuedAt())).append(',');
-        sb.append(ISO.format(invoice.getDueAt())).append(',');
+        sb.append(format(invoice.getIssuedAt())).append(',');
+        sb.append(format(invoice.getDueAt())).append(',');
         sb.append(invoice.getCurrency()).append(',');
         sb.append(invoice.subtotal().getAmount().toPlainString()).append(',');
         sb.append(tax.getAmount().toPlainString());
         return sb.toString();
+    }
+
+    private static String format(Date date) {
+        return ISO.format(date.toInstant());
     }
 }
