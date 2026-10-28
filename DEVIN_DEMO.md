@@ -1,6 +1,6 @@
 # Devin demo: Java 8 to Java 17 migration with proof
 
-**What it shows:** A real version upgrade, not greenfield code. Devin records a Java 8 baseline, replaces removed JDK APIs, gets the suite green on Java 17, and puts before/after test and benchmark numbers in the PR.
+**What it shows:** Devin records tests and a benchmark on Java 8, replaces APIs removed from the JDK, gets the suite green on Java 17, and puts before/after numbers in the PR.
 
 **Needs:** GitHub only (Devin installs JDK 8 and 17 itself)
 
